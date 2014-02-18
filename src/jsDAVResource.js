@@ -4,12 +4,12 @@
 
 'use strict';
 
-function jsDAVResource(XMLDocument) {
+jsDAVlib.DAVResource = function jsDAVResource(XMLDocument) {
   this.xml = XMLDocument;
   this.data = jsDAVlib.xmlParser.parse(XMLDocument);
 }
 
-jsDAVResource.prototype = {
+jsDAVlib.DAVResource.prototype = {
   addFileContents: function addFileContents(data) {
     this.contents = data;
   },

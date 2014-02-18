@@ -53,7 +53,7 @@ jsDAVlib.comms = (function jsDAVCommunications() {
       if (xhr.status != 207 || !xhr.responseXML) {
         return callback(null, 'No valid DAV XML Response');
       }
-      var DAVResource = new jsDAVResource(xhr.responseXML);
+      var DAVResource = new jsDAVlib.DAVResource(xhr.responseXML);
       if (DAVResource.isFile()) {
         var xhr_file = getXHR();
         xhr_file.onload = function getDAVResourceContents() {
