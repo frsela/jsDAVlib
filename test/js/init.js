@@ -107,7 +107,12 @@ var davmain = (function() {
       show_page('config_page');
     },
 
-    showDAVResource: function showDAVResource(davResource) {
+    showDAVResource: function showDAVResource(davResource, error) {
+      if (!davResource) {
+        console.log('ERROR: ' + error);
+        return;
+      }
+
       function add_item(desc, link) {
         var li = document.createElement('li');
         var p = document.createElement('p');
@@ -115,8 +120,8 @@ var davmain = (function() {
         p.textContent = desc;
         a.onclick = function() {
           show_page('loading_page');
-          openedDAVConnection.getResource(link, function(res) {
-            showDAVResource(res);
+          openedDAVConnection.getResource(link, function(res, error) {
+            showDAVResource(res, error);
           });
         }
         a.appendChild(p);

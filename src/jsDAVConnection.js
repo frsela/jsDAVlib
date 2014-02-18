@@ -88,9 +88,10 @@ jsDAVConnection.prototype = {
     if (resourceURL === null) {
       callback(this.rootResource);
     } else {
-      jsDAVCommunications.getResource(this, resourceURL, function(DAVResource, error) {
-        callback(DAVResource);
-      });
+      jsDAVCommunications.getResource(this, resourceURL,
+        function(DAVResource, error) {
+          callback(DAVResource, error);
+        });
     }
   }
 };

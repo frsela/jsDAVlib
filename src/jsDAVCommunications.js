@@ -70,6 +70,7 @@ var jsDAVCommunications = (function jsDAVCommunications() {
           jsDAVlib.debug(DAVConnection.params.url + ' ERROR: ' + e);
           return callback(null, e);
         }
+        return;   // Avoid send not recognized error callback ;)
       }
       if (DAVResource.isCollection()) {
         return callback(DAVResource);
