@@ -142,9 +142,10 @@ var davmain = (function() {
            item++) {
 
         var element = davResource.data.items[item];
+        var path = element.href.split('/');
         var description =
           '[' + (element.resourceType && element.resourceType.type) + '] ' +
-          element.href;
+          (path[path.length-1] || path[path.length-2]);
         if (element.size) {
           description += ' - ' + element.size + ' bytes';
         }
