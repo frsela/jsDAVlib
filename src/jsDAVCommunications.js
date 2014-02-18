@@ -38,7 +38,7 @@ var jsDAVCommunications = (function jsDAVCommunications() {
     try {
       xhr.send();
     } catch(e) {
-      jsDAVlib.debug(DAVConnection.params.url + ' ERROR: ' + e);
+      jsDAVlib_debug(DAVConnection.params.url + ' ERROR: ' + e);
       callback(null, e);
     }
   }
@@ -67,7 +67,7 @@ var jsDAVCommunications = (function jsDAVCommunications() {
         try {
           xhr_file.send();
         } catch(e) {
-          jsDAVlib.debug(DAVConnection.params.url + ' ERROR: ' + e);
+          jsDAVlib_debug(DAVConnection.params.url + ' ERROR: ' + e);
           return callback(null, e);
         }
         return;   // Avoid send not recognized error callback ;)
@@ -90,7 +90,7 @@ var jsDAVCommunications = (function jsDAVCommunications() {
     try {
       xhr.send(jsDAVXMLParser.getQueryXML());
     } catch(e) {
-      jsDAVlib.debug(DAVConnection.params.url + ' ERROR: ' + e);
+      jsDAVlib_debug(DAVConnection.params.url + ' ERROR: ' + e);
       callback(null, e);
     }
   }
