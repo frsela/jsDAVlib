@@ -7,3 +7,8 @@ all: clean
 clean:
 	@echo "Cleaning ..."
 	@rm -rf test/js/lib
+	@rm -f jsDAVlib.zip
+
+app: all
+	@echo "Creating package ..."
+	@cd test; zip -r ../jsDAVlib.zip *

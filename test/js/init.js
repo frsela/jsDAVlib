@@ -86,6 +86,11 @@ var davmain = (function() {
   }
   document.getElementById('config_save').onclick = save_config;
 
+  // Menu actions
+  document.getElementById('add_new_account_menu').onclick = function() {
+    show_page('config_page');
+  };
+
   // Load configured accounts
   jsdavaccounts.getAll().forEach(function(accountName) {
     addAccount(accountName);
@@ -101,10 +106,6 @@ var davmain = (function() {
   return {
     showPage: function showPage(pageid) {
       show_page(pageid);
-    },
-
-    openConfig: function() {
-      show_page('config_page');
     },
 
     showDAVResource: function showDAVResource(davResource, error) {
