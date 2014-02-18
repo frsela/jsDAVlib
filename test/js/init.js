@@ -1,5 +1,5 @@
 
-var jsdavaccounts = (function jsdavaccounts() {
+var jsDAVTestAccounts = (function jsDAVTestAccounts() {
   var accounts = {};
   var storageItemName = 'jsdav_accounts_data';
 
@@ -38,7 +38,7 @@ var jsdavaccounts = (function jsdavaccounts() {
   }
 })();
 
-var davmain = (function() {
+var jsDAVTestMain = (function() {
   var configured_accounts = document.getElementById('configured_accounts');
   var pageTitle = document.getElementById('page_title');
   var pages = document.getElementsByClassName('page');
@@ -62,8 +62,8 @@ var davmain = (function() {
     a.textContent = accountName;
     a.href = '#content';
     a.onclick = function openAccount() {
-      var accountData = jsdavaccounts.get(accountName);
-      davmain.openAccount(accountData);
+      var accountData = jsDAVTestAccounts.get(accountName);
+      jsDAVTestMain.openAccount(accountData);
     }
 
     var li = document.createElement('li');
@@ -71,7 +71,7 @@ var davmain = (function() {
     configured_accounts.appendChild(li);
   }
   function save_config() {
-    davmain.showPage('home_page');
+    jsDAVTestMain.showPage('home_page');
 
     var config_data = {
       name: document.getElementById('config_accountname').value,
@@ -80,9 +80,9 @@ var davmain = (function() {
       password: document.getElementById('passwd').value
     };
 
-    jsdavaccounts.set(config_data);
+    jsDAVTestAccounts.set(config_data);
     addAccount(config_data.name);
-    davmain.openAccount(config_data);
+    jsDAVTestMain.openAccount(config_data);
   }
   document.getElementById('config_save').onclick = save_config;
 
@@ -92,7 +92,7 @@ var davmain = (function() {
   };
 
   // Load configured accounts
-  jsdavaccounts.getAll().forEach(function(accountName) {
+  jsDAVTestAccounts.getAll().forEach(function(accountName) {
     addAccount(accountName);
   });
 
@@ -160,7 +160,7 @@ var davmain = (function() {
       show_page('loading_page');
       openedDAVConnection = jsDAVlib.getConnection(accountData);
       openedDAVConnection.onready = function() {
-        davmain.showDAVResource(openedDAVConnection.rootResource);
+        jsDAVTestMain.showDAVResource(openedDAVConnection.rootResource);
         console.log('rootResource: ' +
           JSON.stringify(openedDAVConnection.rootResource));
       }
