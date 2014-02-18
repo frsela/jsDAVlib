@@ -6,7 +6,7 @@
 
 function jsDAVResource(XMLDocument) {
   this.xml = XMLDocument;
-  this.data = jsDAVXMLParser.parse(XMLDocument);
+  this.data = jsDAVlib.xmlParser.parse(XMLDocument);
 }
 
 jsDAVResource.prototype = {
