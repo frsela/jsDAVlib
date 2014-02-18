@@ -1,0 +1,113 @@
+<!--
+ jsDAVlib test application
+ (c) Telefonica R&D, 2014 - All rights reserved
+ License: GNU Affero V3 (see LICENSE file)
+ Fernando Rodríguez Sela <fernando@ferimer.es>
+-->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="pragma" content="no-cache">
+    <title>jsDAVlib test application</title>
+    <!-- Building blocks -->
+    <link href="css/buildingblocks/fonts.css" rel="stylesheet" type="text/css">
+    <link href="css/buildingblocks/util.css" rel="stylesheet" type="text/css">
+    <link href="css/buildingblocks/style_unstable/lists.css" rel="stylesheet" type="text/css">
+    <link href="css/buildingblocks/style/buttons.css" rel="stylesheet" type="text/css">
+    <link href="css/buildingblocks/style/headers.css" rel="stylesheet" type="text/css">
+    <link href="css/buildingblocks/style_unstable/drawer.css" rel="stylesheet" type="text/css">
+    <link href="css/buildingblocks/style_unstable/value_selector.css" rel="stylesheet" type="text/css">
+    <script defer src="css/buildingblocks/js/action_menu.js"></script>
+    <!-- End BB -->
+    <link href="css/jsDAVlib.css" rel="stylesheet" type="text/css">
+    <script defer src="js/lib/jsDAVlib.js"></script>
+    <script defer src="js/lib/jsDAVXMLParser.js"></script>
+    <script defer src="js/lib/jsDAVConnection.js"></script>
+    <script defer src="js/lib/jsDAVCommunications.js"></script>
+    <script defer src="js/lib/jsDAVResource.js"></script>
+    <script defer src="js/init.js"></script>
+  </head>
+
+  <body bgcolor="#FFFFFF" role="application">
+    <section id="index" data-position="current">
+      <section data-type="sidebar">
+        <header>
+          <menu type="toolbar">
+            <a href="#content"><span class="icon icon-add">add</span></a>
+          </menu>
+          <h1>Main menu</h1>
+        </header>
+        <nav>
+          <h2>Accounts</h2>
+          <ul id="configured_accounts">
+          </ul>
+          <h2>Tools</h2>
+          <ul>
+            <li><a href="#content" onclick="davmain.openConfig()">Add new account</a></li>
+          </ul>
+        </nav>
+      </section>
+      <section id="drawer" role="region">
+        <header>
+          <a href="#content"><span class="icon icon-menu">hide sidebar</span></a>
+          <a href="#drawer"><span class="icon icon-menu">show sidebar</span></a>
+          <h1>jsDAVlib test application <em id="page_title"></em></h1>
+        </header>
+        <section class="content scrollable">
+          <article id="home_page" class="page">
+            <title>Home</title>
+            <p>jsDAVlib Tester</p>
+            <p>Use left menu to configure & open accounts</p>
+          </article>
+
+          <article id="loading_page" class="page">
+            <title>Home</title>
+            <p>jsDAVlib Tester</p>
+            <p>Loading, please wait ...</p>
+          </article>
+
+          <article id="showdavresource_page" class="page">
+            <title>DAVResource</title>
+            <section data-type="list">
+              <header>DAVResource contents <span id="path"></span></header>
+              <ul id="directory_list"></ul>
+              <header>DEBUG information</header>
+            </section>
+            <pre id="json_resource_dump"></pre>
+          </article>
+
+          <article id="config_page" class="page">
+            <title>Config</title>
+            <section>
+              <header>
+                <h2>Select account type</h2>
+              </header>
+              <form role="dialog" onsubmit="return false">
+                <div>
+                  <label for="config_accountname">Account name</label>
+                  <input type="config_accountname" name="config_accountname" id="config_accountname" value="" />
+                </div>
+                <div>
+                  <label for="url">DAV URL</label>
+                  <input type="url" name="url" id="url" value="" />
+                </div>
+                <div>
+                  <label for="key">DAV User</label>
+                  <input type="text" name="user" id="user" value="" />
+                </div>
+                <div>
+                  <label for="key">DAV Password</label>
+                  <input type="password" name="passwd" id="passwd" value="" />
+                </div>
+                <button id="config_save">Save</button>
+              </form>
+            </section>
+          </article>
+
+        </section>
+      </section>
+    </section>
+  </body>
+</html>

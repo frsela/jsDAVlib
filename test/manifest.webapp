@@ -1,0 +1,15 @@
+{
+  "name": "jsDAVlib test application",
+  "description": "A WebDAV, CardDAV and CalDAV test application",
+  "launch_path": "/index.html",
+  "developer": {
+    "name": "Fernando Rodríguez Sela",
+    "url": "https://github.com/frsela/jsDAVlib"
+  },
+  "locales": {
+    "en-US": {
+      "name": "jsDAVlib test application",
+      "description": "A remote photo gallery client"
+    }
+  }
+}

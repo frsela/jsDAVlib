@@ -1,0 +1,27 @@
+/**
+ * jsDAVlib test application
+ * (c) Telefonica R&D, 2014 - All rights reserved
+ * License: GNU Affero V3 (see LICENSE file)
+ * Fernando Rodríguez Sela <fernando@ferimer.es>
+ */
+
+h1 {
+  margin: 10px 0;
+}
+
+#index {
+  height: 100%;
+}
+
+.page {
+  display: none;
+}
+
+.page.visible {
+  display: block;
+}
+
+section.content {
+  padding: 0 !important;
+}
+
