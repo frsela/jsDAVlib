@@ -27,15 +27,15 @@ function jsDAVConnection(params) {
 
   // Recover ROOT folder resource
   var self = this;
-  jsDAVCommunications.checkRepository(this, function(props, error) {
+  jsDAVlib.comms.checkRepository(this, function(props, error) {
     if (error) {
-      jsDAVlib_debug('ERROR: ' + error);
+      jsDAVlib.debug('ERROR: ' + error);
       return self.onerror(error);
     }
 
     self.server = props;
-    jsDAVlib_debug('Server ' + self.params.url + ' capacities', self.server);
-    jsDAVCommunications.getResource(self, '', function(DAVResource, error) {
+    jsDAVlib.debug('Server ' + self.params.url + ' capacities', self.server);
+    jsDAVlib.comms.getResource(self, '', function(DAVResource, error) {
       self.rootResource = DAVResource;
 
       // FIX Base URL
@@ -88,7 +88,7 @@ jsDAVConnection.prototype = {
     if (resourceURL === null) {
       callback(this.rootResource);
     } else {
-      jsDAVCommunications.getResource(this, resourceURL,
+      jsDAVlib.comms.getResource(this, resourceURL,
         function(DAVResource, error) {
           callback(DAVResource, error);
         });

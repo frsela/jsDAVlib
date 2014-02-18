@@ -4,7 +4,7 @@
 
 'use strict';
 
-var jsDAVXMLParser = (function jsDAVXMLParser() {
+jsDAVlib.xmlParser = (function jsDAVXMLParser() {
   var XMLNS_DAV = 'DAV:',
       XMLNS_CardDAV = 'urn:ietf:params:xml:ns:carddav',
       XMLNS_CalDAV = 'urn:ietf:params:xml:ns:caldav';
@@ -19,7 +19,7 @@ var jsDAVXMLParser = (function jsDAVXMLParser() {
       try {
         return node.getElementsByTagNameNS(XMLNS_DAV, tag);
       } catch (e) {
-        console.log('error buscando ' + tag);
+        jsDAVlib.debug('Error looking for tag: ' + tag);
         return null;
       }
     }
