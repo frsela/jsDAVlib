@@ -59,13 +59,6 @@ jsDAVConnection.prototype = {
   onready: function __override_me_onready__() {},
   onerror: function __override_me_onerror__() {},
 
-  isAddressBook: function isAddressBook() {
-    return this.rootResource.isAddressBook();
-  },
-  isCalendar: function isCalendar() {
-    return this.rootResource.isCalendar();
-  },
-
   getInfo: function getInfo() {
     if (this.rootResource.isException()) return {
       url: this.params.url,
@@ -73,10 +66,11 @@ jsDAVConnection.prototype = {
     };
     return {
       url: this.params.url,
-      lastModified: this.rootResource.data.items[0],
+      rootFolder: this.rootResource.data.items[0].href,
+      lastModified: this.rootResource.data.items[0].lastModified,
       isDAVResource: !this.rootResource.isException(),
-      isAddressBook: this.isAddressBook(),
-      isCalendar: this.isCalendar()
+      isAddressBook: this.rootResource.isAddressBook(),
+      isCalendar: this.rootResource.isCalendar()
     }
   },
 

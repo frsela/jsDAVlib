@@ -138,6 +138,9 @@ var jsDAVTestMain = (function() {
         davResource.data.items[0].href;
 
       add_item('.', davResource.data.items[0].href);
+      if (davResource.parent) {
+        add_item('..', davResource.parent);
+      }
 
       for (var item=1;
            item < davResource.data.items.length;
@@ -165,6 +168,8 @@ var jsDAVTestMain = (function() {
         jsDAVTestMain.showDAVResource(openedDAVConnection.rootResource);
         console.log('rootResource: ' +
           JSON.stringify(openedDAVConnection.rootResource));
+        console.log('connectionInfo: ' +
+          JSON.stringify(openedDAVConnection.getInfo()));
       }
     },
 

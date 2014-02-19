@@ -7,6 +7,7 @@
 jsDAVlib.DAVResource = function jsDAVResource(XMLDocument) {
   this.xml = XMLDocument;
   this.data = jsDAVlib.xmlParser.parse(XMLDocument);
+  this.parent = null;
 }
 
 jsDAVlib.DAVResource.prototype = {
@@ -71,6 +72,13 @@ jsDAVlib.DAVResource.prototype = {
       return list;
     } else
       return null;
+  },
+
+  setParent: function setParent(parent) {
+    this.parent = parent;
+  },
+  parent: function getParent() {
+    return this.parent;
   },
 
   // Collection resource responds with an array of all his elements

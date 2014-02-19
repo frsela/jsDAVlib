@@ -54,6 +54,21 @@ jsDAVlib.comms = (function jsDAVCommunications() {
         return callback(null, 'No valid DAV XML Response');
       }
       var DAVResource = new jsDAVlib.DAVResource(xhr.responseXML);
+      if (DAVResource.isException()) {
+        return callback(null, DAVResource.getExceptionInfo());
+      }
+
+      if (resURL === '' || resURL === DAVConnection.getInfo().rootFolder) {
+        DAVResource.setParent(null);
+      } else {
+        var _path = resURL.split('/');
+        if (_path.pop() === '') {
+          _path.pop();
+          _path.push('');
+        }
+        DAVResource.setParent(_path.join('/'));
+      }
+
       if (DAVResource.isFile()) {
         var xhr_file = getXHR();
         xhr_file.onload = function getDAVResourceContents() {
@@ -74,9 +89,6 @@ jsDAVlib.comms = (function jsDAVCommunications() {
       }
       if (DAVResource.isCollection()) {
         return callback(DAVResource);
-      }
-      if (DAVResource.isException()) {
-        return callback(null, DAVResource.getExceptionInfo());
       }
       callback(null, 'Not recognized resource type');
     };
