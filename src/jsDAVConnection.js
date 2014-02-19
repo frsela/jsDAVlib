@@ -85,7 +85,8 @@ jsDAVConnection.prototype = {
     if (typeof(callback) !== 'function')
       callback = function __dummy_callback__() {};
 
-    if (resourceURL === null) {
+    if (resourceURL === null ||
+        resourceURL === this.rootResource.data.items[0].href) {
       callback(this.rootResource);
     } else {
       jsDAVlib.comms.getResource(this, resourceURL,
