@@ -137,6 +137,8 @@ var jsDAVTestMain = (function() {
       document.getElementById('path').textContent =
         davResource.data.items[0].href;
 
+      add_item('.', davResource.data.items[0].href);
+
       for (var item=1;
            item < davResource.data.items.length;
            item++) {
