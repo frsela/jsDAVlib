@@ -7,11 +7,6 @@
 jsDAVlib.comms = (function jsDAVCommunications() {
 
   // Helpers
-  function fixCallback(cb) {
-    if (typeof(cb) !== 'function')
-      return function __dummy_callback__() {};
-    return cb;
-  }
   function getXHR() {
     return new XMLHttpRequest({
       mozAnon: true,
@@ -21,7 +16,7 @@ jsDAVlib.comms = (function jsDAVCommunications() {
 
   // Callback with DAV server properties
   function checkDAVrepository(DAVConnection, callback) {
-    callback = fixCallback(callback);
+    callback = (typeof callback === 'function') ? callback : function() {};
     var xhr = getXHR();
 
     xhr.onload = function checkDAVrepositoryResponse() {
@@ -43,12 +38,54 @@ jsDAVlib.comms = (function jsDAVCommunications() {
     }
   }
 
-  // Callback with the recovered DAVResource
-  function getDAVResource(DAVConnection, resURL, callback) {
-    callback = fixCallback(callback);
+  function getDAVResourceInfo(DAVConnection, resURL, callback) {
+    callback = (typeof callback === 'function') ? callback : function() {};
     var xhr = getXHR();
 
-    xhr.onload = function getDAVCollectionResponse() {
+    xhr.onload = function getDAVResourceInfoResponse() {
+      // We SHALL receive a MULTISTATUS response (207) // See RFC 4918
+      if (xhr.status != 207 || !xhr.responseXML) {
+        return callback(null, 'No valid DAV XML Response');
+      }
+      var DAVResource = new jsDAVlib.DAVResource(xhr.responseXML);
+      if (DAVResource.isException()) {
+        return callback(null, DAVResource.getExceptionInfo());
+      }
+
+      if (resURL === '' || resURL === DAVConnection.getInfo().rootFolder) {
+        DAVResource.setParent(null);
+      } else {
+        var _path = resURL.split('/');
+        if (_path.pop() === '') {
+          _path.pop();
+          _path.push('');
+        }
+        DAVResource.setParent(_path.join('/'));
+      }
+
+      return callback(DAVResource);
+    };
+
+    xhr.open('PROPFIND', DAVConnection.params.url + resURL, true,
+      DAVConnection.params.user, DAVConnection.params.password);
+    xhr.setRequestHeader('Depth', '0');
+    xhr.withCredentials = 'true';
+    xhr.responseType = "document";
+
+    try {
+      xhr.send(jsDAVlib.xmlParser.getQueryXML());
+    } catch(e) {
+      jsDAVlib.debug(DAVConnection.params.url + ' ERROR: ' + e);
+      callback(null, e);
+    }
+  }
+
+  // Callback with the recovered DAVResource
+  function getDAVResource(DAVConnection, resURL, callback) {
+    callback = (typeof callback === 'function') ? callback : function() {};
+    var xhr = getXHR();
+
+    xhr.onload = function getDAVResourceResponse() {
       // We SHALL receive a MULTISTATUS response (207) // See RFC 4918
       if (xhr.status != 207 || !xhr.responseXML) {
         return callback(null, 'No valid DAV XML Response');
@@ -110,6 +147,10 @@ jsDAVlib.comms = (function jsDAVCommunications() {
   return {
     checkRepository: function checkRepository(DAVConnection, callback) {
       checkDAVrepository(DAVConnection, callback);
+    },
+
+    getResourceInfo: function getResourceInfo(DAVConnection, resURL, callback) {
+      getDAVResourceInfo(DAVConnection, resURL, callback);
     },
 
     getResource: function getResource(DAVConnection, resURL, callback) {

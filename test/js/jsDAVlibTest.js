@@ -134,28 +134,37 @@ var jsDAVTestMain = (function() {
         JSON.stringify(davResource, null, '  ');
       dir_ul.innerHTML = "";
 
-      document.getElementById('path').textContent =
-        davResource.data.items[0].href;
+      var resourceMetadata = davResource.getMetadata();
+      document.getElementById('path').textContent = resourceMetadata.href;
 
-      add_item('.', davResource.data.items[0].href);
+      add_item('.', resourceMetadata.href);
       if (davResource.parent) {
         add_item('..', davResource.parent);
       }
 
-      for (var item=1;
-           item < davResource.data.items.length;
-           item++) {
+      if (davResource.isCollection()) {
+        document.getElementById('file_data').hidden = true;
+        var resourceCollectionContents = davResource.getCollectionContents();
+        for (var item=1;
+             item < resourceCollectionContents.length;
+             item++) {
 
-        var element = davResource.data.items[item];
-        var path = element.href.split('/');
-        var description =
-          '[' + (element.resourceType && element.resourceType.type) + '] ' +
-          (path[path.length-1] || path[path.length-2]);
-        if (element.size) {
-          description += ' - ' + element.size + ' bytes';
+          var element = resourceCollectionContents[item];
+          var path = element.href.split('/');
+          var description =
+            '[' + element.type + '] ' +
+            (path[path.length-1] || path[path.length-2]);
+          if (element.size) {
+            description += ' - ' + element.size + ' bytes';
+          }
+
+          add_item(description, element.href);
         }
-
-        add_item(description, element.href);
+      } else {
+        // We consider this is a file
+        document.getElementById('file_contents').textContent =
+          davResource.getFileContents();
+        document.getElementById('file_data').hidden = false;
       }
 
       show_page('showdavresource_page');
@@ -165,11 +174,11 @@ var jsDAVTestMain = (function() {
       show_page('loading_page');
       openedDAVConnection = jsDAVlib.getConnection(accountData);
       openedDAVConnection.onready = function() {
-        jsDAVTestMain.showDAVResource(openedDAVConnection.rootResource);
-        console.log('rootResource: ' +
-          JSON.stringify(openedDAVConnection.rootResource));
         console.log('connectionInfo: ' +
           JSON.stringify(openedDAVConnection.getInfo()));
+        openedDAVConnection.getResource(null, function(res, error) {
+          jsDAVTestMain.showDAVResource(res, error);
+        });
       }
     },
 
