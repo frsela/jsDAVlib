@@ -136,6 +136,8 @@ var jsDAVTestMain = (function() {
 
       var resourceMetadata = davResource.getMetadata();
       document.getElementById('path').textContent = resourceMetadata.href;
+      document.getElementById('json_resource_metadata').textContent =
+        JSON.stringify(resourceMetadata, null, '  ');
 
       add_item('.', resourceMetadata.href);
       if (davResource.parent) {
