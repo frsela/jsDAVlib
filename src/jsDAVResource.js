@@ -5,8 +5,25 @@
 'use strict';
 
 jsDAVlib.DAVResource = function jsDAVResource(XMLDocument) {
-  this.xml = XMLDocument;
-  this.data = jsDAVlib.xmlParser.parse(XMLDocument);
+  if (XMLDocument) {
+    this.xml = XMLDocument;
+    this.data = jsDAVlib.xmlParser.parse(XMLDocument);
+  } else {
+    // If no XMLDocument is provided a new and clean resource is created
+    // TO-DO: Allow collection & file creation and store changes in server
+    this.xml = null;
+    this.data = {
+      valid: true,
+      items: [{
+        href: "",
+        size: -1,
+        mime: "",
+        resourceType: {
+          type: "file"
+        }
+      }]
+    }
+  }
   this.parent = null;
 }
 

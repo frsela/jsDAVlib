@@ -83,18 +83,8 @@ jsDAVlib.comms = (function jsDAVCommunications() {
   // Callback with the recovered DAVResource
   function getDAVResource(DAVConnection, resURL, callback) {
     callback = (typeof callback === 'function') ? callback : function() {};
-    var xhr = getXHR();
 
-    xhr.onload = function getDAVResourceResponse() {
-      // We SHALL receive a MULTISTATUS response (207) // See RFC 4918
-      if (xhr.status != 207 || !xhr.responseXML) {
-        return callback(null, 'No valid DAV XML Response');
-      }
-      var DAVResource = new jsDAVlib.DAVResource(xhr.responseXML);
-      if (DAVResource.isException()) {
-        return callback(null, DAVResource.getExceptionInfo());
-      }
-
+    function setParentFolder(DAVResource) {
       if (resURL === '' || resURL === DAVConnection.getInfo().rootFolder) {
         DAVResource.setParent(null);
       } else {
@@ -105,29 +95,52 @@ jsDAVlib.comms = (function jsDAVCommunications() {
         }
         DAVResource.setParent(_path.join('/'));
       }
+    }
 
-      if (DAVResource.isFile()) {
-        var xhr_file = getXHR();
-        xhr_file.onload = function getDAVResourceContents() {
-          DAVResource.addFileContents(xhr_file.response);
-          return callback(DAVResource);
-        };
-        xhr_file.open('GET', DAVConnection.params.url + resURL, true,
-          DAVConnection.params.user, DAVConnection.params.password);
-        xhr_file.withCredentials = 'true';
-        xhr_file.responseType = "text";    // TODO: Change based on mime type !
-        try {
-          xhr_file.send();
-        } catch(e) {
-          jsDAVlib.debug(DAVConnection.params.url + ' ERROR: ' + e);
-          return callback(null, e);
+    var xhr = getXHR();
+    xhr.onload = function getDAVResourceResponse() {
+      // We SHALL receive a MULTISTATUS response (207) // See RFC 4918
+      if ( (xhr.status != 207 || !xhr.responseXML) && xhr.status != 404 ) {
+        return callback(null, 'No valid DAV XML Response');
+      }
+
+      if (xhr.status === 404) {
+        // Some DAV servers doesn't support PROPFIND into file resources like
+        // DAVMail, so we can fake a new DAVResource and try to get the file
+        jsDAVlib.debug("Alternative recovering (DAVMail?)");
+        var DAVResource = new jsDAVlib.DAVResource();
+        setParentFolder(DAVResource);
+        getFileContents(DAVConnection,
+          DAVConnection.params.url + resURL, function(data, error) {
+            if (data) {
+              DAVResource.addFileContents(data);
+              return callback(DAVResource);
+            }
+            callback(null, error);
+          });
+      } else {
+        var DAVResource = new jsDAVlib.DAVResource(xhr.responseXML);
+        if (DAVResource.isException()) {
+          return callback(null, DAVResource.getExceptionInfo());
         }
-        return;   // Avoid send not recognized error callback ;)
+
+        setParentFolder(DAVResource);
+
+        if (DAVResource.isFile()) {
+          return getFileContents(DAVConnection,
+            DAVConnection.params.url + resURL, function(data, error) {
+              if (data) {
+                DAVResource.addFileContents(data);
+                return callback(DAVResource);
+              }
+              callback(null, error);
+            });
+        }
+        if (DAVResource.isCollection()) {
+          return callback(DAVResource);
+        }
+        callback(null, 'Not recognized resource type');
       }
-      if (DAVResource.isCollection()) {
-        return callback(DAVResource);
-      }
-      callback(null, 'Not recognized resource type');
     };
 
     xhr.open('PROPFIND', DAVConnection.params.url + resURL, true,
@@ -138,6 +151,24 @@ jsDAVlib.comms = (function jsDAVCommunications() {
 
     try {
       xhr.send(jsDAVlib.xmlParser.getQueryXML());
+    } catch(e) {
+      jsDAVlib.debug(DAVConnection.params.url + ' ERROR: ' + e);
+      callback(null, e);
+    }
+  }
+
+  function getFileContents(DAVConnection, fileURL, callback) {
+    var xhr_file = getXHR();
+    xhr_file.onload = function getDAVResourceContents() {
+      if (xhr_file.status < 300) callback(xhr_file.response);
+      else callback(null, xhr_file.statusText);
+    };
+    xhr_file.open('GET', fileURL, true,
+      DAVConnection.params.user, DAVConnection.params.password);
+    xhr_file.withCredentials = 'true';
+    xhr_file.responseType = "text";    // TODO: Change based on mime type !
+    try {
+      xhr_file.send();
     } catch(e) {
       jsDAVlib.debug(DAVConnection.params.url + ' ERROR: ' + e);
       callback(null, e);
