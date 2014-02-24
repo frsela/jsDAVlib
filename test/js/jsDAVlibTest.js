@@ -146,7 +146,7 @@ var jsDAVTestMain = (function() {
 
       if (davResource.isCollection()) {
         document.getElementById('file_data').hidden = true;
-        var resourceCollectionContents = davResource.getCollectionContents();
+        var resourceCollectionContents = davResource.getContents();
         for (var item=1;
              item < resourceCollectionContents.length;
              item++) {
@@ -165,7 +165,7 @@ var jsDAVTestMain = (function() {
       } else {
         // We consider this is a file
         document.getElementById('file_contents').textContent =
-          davResource.getFileContents();
+          davResource.getContents();
         document.getElementById('file_data').hidden = false;
       }
 

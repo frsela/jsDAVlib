@@ -68,14 +68,11 @@ jsDAVlib.DAVResource.prototype = {
       type: this.data.items[0].resourceType
     }
   },
-  getFileContents: function getFileContents() {
-    if (this.isFile && this.contents)
+
+  getContents: function getContents() {
+    if (this.isFile && this.contents) {
       return this.contents;
-    else
-      return null;
-  },
-  getCollectionContents: function getCollectionContents() {
-    if (this.isCollection) {
+    } else if (this.isCollection) {
       var list = [];
       for (var i=1; i<this.data.items.length; i++) {
         list.push({
@@ -87,8 +84,9 @@ jsDAVlib.DAVResource.prototype = {
         });
       }
       return list;
-    } else
+    } else {
       return null;
+    }
   },
 
   setParent: function setParent(parent) {
@@ -101,16 +99,9 @@ jsDAVlib.DAVResource.prototype = {
   // Collection resource responds with an array of all his elements
   // File resource responds with the file contents
   get: function get() {
-    if (this.isFile() || this.contents) {
-      return {
-        meta: this.getMetadata(),
-        data: this.getFileContents()
-      };
-    } else {
-      return {
-        meta: this.getMetadata(),
-        data: this.getCollectionContents()
-      };
-    }
+    return {
+      meta: this.getMetadata(),
+      data: this.getContents()
+    };
   }
 };
