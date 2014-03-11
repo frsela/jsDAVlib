@@ -100,6 +100,14 @@ var jsDAVTestMain = (function() {
   hide_pages();
   show_page('home_page');
 
+  function resize_view() {
+    var textboxarea = document.getElementById('file_contents');
+    textboxarea.style.height = '305px';
+    textboxarea.style.width =
+      (textboxarea.parentElement.parentElement.clientWidth - 10) + 'px';
+  }
+  window.onresize = resize_view;
+
   // Open Account data
   var openedDAVConnection = null;
 
@@ -164,9 +172,15 @@ var jsDAVTestMain = (function() {
         }
       } else {
         // We consider this is a file
-        document.getElementById('file_contents').textContent =
+        document.getElementById('file_contents').value =
           davResource.getContents();
         document.getElementById('file_data').hidden = false;
+        document.getElementById('file_save').onclick = function saveDAVRes() {
+          davResource.addFileContents(
+            document.getElementById('file_contents').value);
+          openedDAVConnection.writeResource(davResource);
+        };
+        setTimeout(resize_view);
       }
 
       show_page('showdavresource_page');
