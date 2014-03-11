@@ -175,6 +175,27 @@ jsDAVlib.comms = (function jsDAVCommunications() {
     }
   }
 
+  function writeDAVResource(DAVConnection, DAVResource, callback) {
+    var resURL = DAVConnection.params.url + DAVResource.getMetadata().href;
+    if (!DAVResource.isFile())
+      return callback(null, "Resource is not a file");
+
+    var xhr_file = getXHR();
+    xhr_file.onload = function writeResourceResponse() {
+      if (xhr_file.status < 300) callback(xhr_file.statusText);
+      else callback(null, xhr_file.statusText);
+    };
+    xhr_file.open('PUT', resURL, true,
+      DAVConnection.params.user, DAVConnection.params.password);
+    xhr_file.withCredentials = 'true';
+    try {
+      xhr_file.send(DAVResource.getContents());
+    } catch(e) {
+      jsDAVlib.debug(DAVConnection.params.url + ' ERROR: ' + e);
+      callback(null, e);
+    }
+  }
+
   return {
     checkRepository: function checkRepository(DAVConnection, callback) {
       checkDAVrepository(DAVConnection, callback);
@@ -186,6 +207,10 @@ jsDAVlib.comms = (function jsDAVCommunications() {
 
     getResource: function getResource(DAVConnection, resURL, callback) {
       getDAVResource(DAVConnection, resURL, callback);
+    },
+
+    writeResource: function writeResource(DAVConnection, DAVResource, cb) {
+      writeDAVResource(DAVConnection, DAVResource, cb);
     }
   };
 })();

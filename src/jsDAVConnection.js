@@ -91,5 +91,14 @@ jsDAVConnection.prototype = {
     jsDAVlib.comms.getResource(this, resourceURL, function(DAVResource, error) {
       callback(DAVResource, error);
     });
+  },
+
+  // Write changes into the server
+  writeResource: function writeDAVResource(DAVResource, callback) {
+    callback = (typeof callback === 'function') ? callback : function() {};
+
+    jsDAVlib.comms.writeResource(this, DAVResource, function(status, error) {
+      callback(status, error);
+    });
   }
 };
