@@ -4,21 +4,19 @@
 
 'use strict';
 
-var jsDAVlib = (function jsDAVlib() {
-  function jsDAVlib_debug(msg, obj) {
-    if (obj) {
-      msg = msg + ': ' + JSON.stringify(obj);
-    }
-    console.log('DEBUG jsDAVlib: ' + (new Date()).getTime() + ' - ' + msg);
-  }
 
-  return {
+var jsDAVlib;
+
+(function () {
+  jsDAVlib = {
     getConnection: function getConnection(params) {
       return new jsDAVConnection(params);
     },
-
     debug: function jsDAVDebug(msg, obj) {
-      jsDAVlib_debug(msg, obj);
+      if (obj) {
+        msg = msg + ': ' + JSON.stringify(obj);
+      }
+      console.log('DEBUG jsDAVlib: ' + (new Date()).getTime() + ' - ' + msg);
     }
   };
 })();

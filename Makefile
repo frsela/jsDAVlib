@@ -1,3 +1,5 @@
+dist: src/*.js
+	cat build/head src/jsDAVlib.js src/jsDAVCommunications.js src/jsDAVConnection.js src/jsDAVResource.js src/jsDAVXMLParser.js build/tail > dist/jsDAVlib.js
 
 all: clean
 	@echo "Preparing test application"
@@ -12,3 +14,4 @@ clean:
 app: all
 	@echo "Creating package ..."
 	@cd test; zip -r ../jsDAVlib.zip *
+
